@@ -46,6 +46,9 @@ EXTRA:
 -No login, usar animação de loading enquanto está a fazer login.
 -Strings no tipo android:text="@string/main_welcome" e não android:text="WELCOME"
 
-TODO:
+TODO(Rui):
+-Investigar Firebase (Kotlin)
+
+TODO (Filipe):
 -Criar tema "Dark mode"
 -Acabar XML da activity "Login"
