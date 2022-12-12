@@ -1,0 +1,51 @@
+!!!OBRIGATÓRIO!!!
+-Firebase: plataforma para autenticação e base de dados
+-Kotlin
+-Android Studio
+-Inglês (PT não!)
+
+Tema: chat
+
+!DÚVIDAS!
+-Git consola "pass/token" n dava?
+
+Funcionalidades:
+-Registo -> email, pass, username, nome, género, dataNascimento
+-Autenticação
+-Perfil -> foto, nome, dataNascimento, dataRegisto
+-Mensagens -> texto, imagem, vídeo, GIF
+-Grupos de users -> chat em grupo
+-Verificação entrega e leitura de mensagens (tick e double-tick)
+-User a escrever...
+-Design "bonito"
+
+Activities:
+-Login
+-Registo
+-"HomeScreen"
+-Chat
+-Perfil
+
+Branches GIT:
+-master (código estável já implementado e testado)
+--dev (código a ser desenvolvido)
+---nome-feature (feature a ser desenvolvida)
+--qa (testar código da release tal [várias features]-> vem do dev)
+
+Entrega:
+-Data -> 16/01/2023
+-Pasta comprimida com -> todos os ficheiros do projeto
+-Relatório -> explicar organização da aplicação, como funciona e dificuldades ultrapassadas
+
+Apresentação (15 mins total):
+-apresentação de produto (venda/marketing) [5 mins]
+-questões [5 mins]
+-prof pode pedir descrição abordagens de código [5 mins]
+
+EXTRA:
+-No login, usar animação de loading enquanto está a fazer login.
+-Strings no tipo android:text="@string/main_welcome" e não android:text="WELCOME"
+
+TODO:
+-Criar tema "Dark mode"
+-Acabar XML da activity "Login"
