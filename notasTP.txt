@@ -11,7 +11,7 @@ Tema: chat
 
 Funcionalidades:
 -Registo -> email, pass, username, nome, género, dataNascimento
--Autenticação
+-Autenticação (Login)
 -Perfil -> foto, nome, dataNascimento, dataRegisto
 -Mensagens -> texto, imagem, vídeo, GIF
 -Grupos de users -> chat em grupo
@@ -45,10 +45,13 @@ Apresentação (15 mins total):
 EXTRA:
 -No login, usar animação de loading enquanto está a fazer login.
 -Strings no tipo android:text="@string/main_welcome" e não android:text="WELCOME"
+-Criar tema "Dark mode"
 
 TODO(Rui):
 -Investigar Firebase (Kotlin)
+-No tema "MyTheme" (Dark mode), tentar mudar underline do edittext para branco
+-No tema, tentar mudar cor do texto escrito pelo user nos edittext para branco (atualmente está a preto, não se vê)
 
 TODO (Filipe):
--Criar tema "Dark mode"
--Acabar XML da activity "Login"
+-Acabar XML da activity "Login" (falta toast temporário de login e register - placeholder)
+-Fazer os outros XMLs
