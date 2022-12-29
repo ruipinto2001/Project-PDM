@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "416633133118",
+    "project_id": "projectpdm-eb5e5",
+    "storage_bucket": "projectpdm-eb5e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416633133118:android:688a9c23cebc074905596f",
+        "android_client_info": {
+          "package_name": "pt.ipca.sermo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416633133118-gmin2gcm99b9fe8qd3n8n8rjjm0hsvvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCd8ndDQvnNu2UkLaJ5LM_wiRbceNQe2hY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416633133118-gmin2gcm99b9fe8qd3n8n8rjjm0hsvvk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
