@@ -20,15 +20,15 @@
         />
 
     <EditText
-        android:id="@+id/register_name_edittext"
+        android:id="@+id/register_username_edittext"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_title_textview"
 
-        android:hint="Name"
-        android:layout_marginTop="150dp"
+        android:hint="Username"
+        android:layout_marginTop="50dp"
         />
 
     <EditText
@@ -37,10 +37,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_name_edittext"
+        app:layout_constraintTop_toBottomOf="@+id/register_username_edittext"
 
-        android:hint="@string/main_email"
-        android:layout_marginTop="50dp"
+        android:hint="Email"
+        android:layout_marginTop="25dp"
         />
 
     <EditText
@@ -51,8 +51,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_email_edittext"
 
-        android:hint="@string/main_pass"
-        android:layout_marginTop="50dp"
+        android:hint="Password"
+        android:layout_marginTop="25dp"
         />
 
     <EditText
@@ -63,8 +63,32 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_password_edittext"
 
-        android:hint="@string/register_confirm"
-        android:layout_marginTop="50dp"
+        android:hint="Confirm password"
+        android:layout_marginTop="25dp"
+        />
+
+    <Spinner
+        android:id="@+id/register_gender_spinner"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_confirmPassword_edittext"
+        android:spinnerMode="dialog"
+
+        android:hint="Gender"
+        android:layout_marginTop="25dp"
+        />
+
+    <DatePicker
+        android:id="@+id/register_birthday_datepicker"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_gender_spinner"
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
         />
 
     <Button
@@ -75,7 +99,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
 
-        android:text="@string/main_register"
+        android:text="Register"
         android:layout_marginBottom="50dp"
         android:onClick="doRegister"
         />
