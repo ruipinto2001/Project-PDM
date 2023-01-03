@@ -28,7 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/register_title_textview"
 
         android:hint="Username"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         />
 
     <EditText
@@ -100,7 +100,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
 
         android:text="Register"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="25dp"
         android:onClick="doRegister"
         />
 
