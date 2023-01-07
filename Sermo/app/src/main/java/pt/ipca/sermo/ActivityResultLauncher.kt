@@ -7,32 +7,27 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 
-class ActivityResultLauncher : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+class ActivityResultLauncher : AppCompatActivity()
+{
+    private val signInLauncher = registerForActivityResult(FirebaseAuthUIActivityResultContract())
+    { res -> this.onSignInResult(res) }
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result_launcher)
     }
 
+    private fun createSignInIntent()
+    {
+        // Choose authentication providers
+        val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build())
 
-    // See: https://developer.android.com/training/basics/intents/result
-    private val signInLauncher = registerForActivityResult(
-        FirebaseAuthUIActivityResultContract()
-    ) { res ->
-        this.onSignInResult(res)
+        // Create and launch sign-in intent
+        val signInIntent = AuthUI.getInstance().createSignInIntentBuilder()
+            .setAvailableProviders(providers).build()
+        signInLauncher.launch(signInIntent)
     }
-
-
-    // Choose authentication providers
-    val providers = arrayListOf(
-        AuthUI.IdpConfig.EmailBuilder().build())
-
-    // Create and launch sign-in intent
-    val signInIntent = AuthUI.getInstance()
-        .createSignInIntentBuilder()
-        .setAvailableProviders(providers)
-        .build()
-    signInLauncher.launch(signInIntent)
-
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
@@ -63,4 +58,35 @@ class ActivityResultLauncher : AppCompatActivity() {
                 // ...
             }
     }
+    /*
+    private fun themeAndLogo() {
+        val providers = emptyList<AuthUI.IdpConfig>()
+
+        // [START auth_fui_theme_logo]
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .setLogo(R.drawable.my_great_logo) // Set logo drawable
+            .setTheme(R.style.MySuperAppTheme) // Set theme
+            .build()
+        signInLauncher.launch(signInIntent)
+        // [END auth_fui_theme_logo]
+    }
+    */
+
+    /*
+    private fun privacyAndTerms() {
+        val providers = emptyList<AuthUI.IdpConfig>()
+        // [START auth_fui_pp_tos]
+        val signInIntent = AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .setTosAndPrivacyPolicyUrls(
+                "https://example.com/terms.html",
+                "https://example.com/privacy.html")
+            .build()
+        signInLauncher.launch(signInIntent)
+        // [END auth_fui_pp_tos]
+    }
+    */
 }

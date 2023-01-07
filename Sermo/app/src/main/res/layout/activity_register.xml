@@ -13,7 +13,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-
         android:text="New Account"
         android:layout_marginTop="10dp"
         android:textSize="50sp"
@@ -26,7 +25,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_title_textview"
-
         android:hint="Username"
         android:layout_marginTop="25dp"
         />
@@ -74,16 +72,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_confirmPassword_edittext"
-        android:spinnerMode="dialog"
-
+        android:spinnerMode="dropdown"
         android:hint="Gender"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="5dp"
         />
 
     <DatePicker
         android:id="@+id/register_birthday_datepicker"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_gender_spinner"
