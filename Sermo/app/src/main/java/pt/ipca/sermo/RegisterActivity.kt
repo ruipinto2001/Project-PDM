@@ -79,15 +79,17 @@ class RegisterActivity : AppCompatActivity()
         // Create account
         else
         {
-            createAccount(email, password)
+            val uid = createAccount(email, password)
             // TODO: Save user registration data on DB
             finish() // Exit register activity
         }
     }
 
     // Validates email and password and creates a new user
-    private fun createAccount(email: String, password: String)
+    private fun createAccount(email: String, password: String): String
     {
+        var uid = ""
+
         // Invalid e-mail
         if (!validateEmail(email))
             Toast.makeText(this,"Please enter a valid e-mail address",
@@ -110,8 +112,17 @@ class RegisterActivity : AppCompatActivity()
                 if (task.isSuccessful)
                 {
                     Log.d(TAG, "createUserWithEmail:success")
-                    /*val builder = AlertDialog.Builder(this)
-                    builder.setTitle("")*/
+
+                    // Feedback to the user
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Success!")
+                    builder.setMessage("Your account was successfully created.")
+                    builder.setPositiveButton("Ok") {dialog, which -> }
+                    builder.show()
+
+                    // Return newly created user id
+                    val user = Firebase.auth.currentUser
+                    if (user != null) uid = user.uid
                 }
                 else
                 {
@@ -122,6 +133,7 @@ class RegisterActivity : AppCompatActivity()
                 }
             }
         }
+        return uid
     }
 
     private fun validateEmail(email: String): Boolean
@@ -145,6 +157,7 @@ class RegisterActivity : AppCompatActivity()
     private fun registerFB(username: String, gender: String, birthday: String)
     {
         //val user = Firebase.auth.currentUser
+        //val Uid = user?.uid
         // TODO
     }
 
