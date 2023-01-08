@@ -1,5 +1,8 @@
 package pt.ipca.sermo
 
+import android.app.Activity
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -9,7 +12,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import pt.ipca.sermo.models.User
 
 class RegisterActivity : AppCompatActivity()
 {
@@ -80,7 +85,11 @@ class RegisterActivity : AppCompatActivity()
         else
         {
             val uid = createAccount(email, password)
+
             // TODO: Save user registration data on DB
+
+            val returnIntent = Intent()
+            setResult(Activity.RESULT_OK, returnIntent)
             finish() // Exit register activity
         }
     }
@@ -113,16 +122,8 @@ class RegisterActivity : AppCompatActivity()
                 {
                     Log.d(TAG, "createUserWithEmail:success")
 
-                    // Feedback to the user
-                    val builder = AlertDialog.Builder(this)
-                    builder.setTitle("Success!")
-                    builder.setMessage("Your account was successfully created.")
-                    builder.setPositiveButton("Ok") {dialog, which -> }
-                    builder.show()
-
                     // Return newly created user id
-                    val user = Firebase.auth.currentUser
-                    if (user != null) uid = user.uid
+
                 }
                 else
                 {
@@ -154,11 +155,26 @@ class RegisterActivity : AppCompatActivity()
 
     companion object { private const val TAG = "Register" }
 
-    private fun registerFB(username: String, gender: String, birthday: String)
+    private fun registerDB(username: String, gender: String, birthday: String)
     {
-        //val user = Firebase.auth.currentUser
-        //val Uid = user?.uid
-        // TODO
+        val user = Firebase.auth.currentUser
+
+        // If the registration was successful, pass the new user data to the DB
+        if (user != null)
+        {
+            val db = Firebase.firestore
+            val createdUser = User(user.uid, username, user.email!!, gender, birthday)
+
+            // Add user to the DB
+            db.collection("Users")
+                .add(user)
+                .addOnSuccessListener { documentReference ->
+                    Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error adding document", e)
+                }
+        }
     }
 
 }

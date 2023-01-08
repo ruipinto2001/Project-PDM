@@ -1,5 +1,6 @@
 package pt.ipca.sermo
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,5 +24,14 @@ class LoginActivity : AppCompatActivity() {
     {
         val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
         startActivityForResult(intent, code)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == code) // Data from register activity (name and email)
+        { // && resultCode == RESULT_OK
+            if (resultCode == Activity.RESULT_OK)
+                Toast.makeText(this,"Register Successful!", Toast.LENGTH_LONG).show()
+        }
     }
 }
