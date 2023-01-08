@@ -86,7 +86,8 @@ class RegisterActivity : AppCompatActivity()
         {
             val uid = createAccount(email, password)
 
-            // TODO: Save user registration data on DB
+            // Save user registration data on Firebase Cloud Firestore
+            registerDB(username, gender, birthday)
 
             val returnIntent = Intent()
             setResult(Activity.RESULT_OK, returnIntent)
