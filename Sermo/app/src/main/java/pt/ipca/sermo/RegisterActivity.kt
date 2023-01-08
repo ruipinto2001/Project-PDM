@@ -82,21 +82,12 @@ class RegisterActivity : AppCompatActivity()
             Toast.makeText(this,"Passwords don't match", Toast.LENGTH_LONG).show()
 
         // Create account
-        else
-        {
-            val uid = createAccount(email, password)
-
-            // Save user registration data on Firebase Cloud Firestore
-            registerDB(username, gender, birthday)
-
-            val returnIntent = Intent()
-            setResult(Activity.RESULT_OK, returnIntent)
-            finish() // Exit register activity
-        }
+        else createAccount(username, email, password, gender, birthday)
     }
 
     // Validates email and password and creates a new user
-    private fun createAccount(email: String, password: String): String
+    private fun createAccount(username: String, email: String, password: String,
+                              gender: String, birthday: String): String
     {
         var uid = ""
 
@@ -123,8 +114,8 @@ class RegisterActivity : AppCompatActivity()
                 {
                     Log.d(TAG, "createUserWithEmail:success")
 
-                    // Return newly created user id
-
+                    // Send new user data to Firebase Cloud Firestore
+                    registerDB(username, gender, birthday)
                 }
                 else
                 {
@@ -154,8 +145,6 @@ class RegisterActivity : AppCompatActivity()
         return password.matches(passwordRegex)
     }
 
-    companion object { private const val TAG = "Register" }
-
     private fun registerDB(username: String, gender: String, birthday: String)
     {
         val user = Firebase.auth.currentUser
@@ -168,14 +157,19 @@ class RegisterActivity : AppCompatActivity()
 
             // Add user to the DB
             db.collection("Users")
-                .add(user)
+                .add(createdUser)
                 .addOnSuccessListener { documentReference ->
-                    Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+                    Log.d("Register",
+                        "DocumentSnapshot added with ID: ${documentReference.id}")
+                    val returnIntent = Intent()
+                    setResult(Activity.RESULT_OK, returnIntent)
+                    finish() // Exit register activity
                 }
                 .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
+                    Log.w("Register", "Error adding document", e)
                 }
         }
     }
 
+    companion object { private const val TAG = "Register" }
 }

@@ -4,8 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import pt.ipca.sermo.models.User
 
 class LoginActivity : AppCompatActivity() {
     private val code = 1001
@@ -28,10 +33,11 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == code) // Data from register activity (name and email)
-        { // && resultCode == RESULT_OK
+        if (requestCode == code && data != null)
+        {
             if (resultCode == Activity.RESULT_OK)
                 Toast.makeText(this,"Register Successful!", Toast.LENGTH_LONG).show()
         }
     }
+
 }
