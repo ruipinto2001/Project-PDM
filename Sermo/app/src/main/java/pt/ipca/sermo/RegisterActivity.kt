@@ -112,7 +112,7 @@ class RegisterActivity : AppCompatActivity()
             { task -> // Sign in success
                 if (task.isSuccessful)
                 {
-                    Log.d(TAG, "createUserWithEmail:success")
+                    Log.d(TAG, "createAccount:success")
 
                     // Send new user data to Firebase Cloud Firestore
                     registerDB(username, gender, birthday)
@@ -120,7 +120,7 @@ class RegisterActivity : AppCompatActivity()
                 else
                 {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                    Log.w(TAG, "createAccount:failure", task.exception)
                     Toast.makeText(this, "Authentication failed",
                         Toast.LENGTH_LONG).show()
                 }
@@ -165,9 +165,8 @@ class RegisterActivity : AppCompatActivity()
                     setResult(Activity.RESULT_OK, returnIntent)
                     finish() // Exit register activity
                 }
-                .addOnFailureListener { e ->
-                    Log.w("Register", "Error adding document", e)
-                }
+                .addOnFailureListener {
+                        e -> Log.w("Register", "Error adding document", e) }
         }
     }
 
