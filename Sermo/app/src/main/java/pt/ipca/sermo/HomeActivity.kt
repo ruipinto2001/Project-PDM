@@ -42,7 +42,7 @@ class HomeActivity : AppCompatActivity()
         // Check if the user filled in the field
         if (TextUtils.isEmpty(contactID))
             Toast.makeText(this,"Please write the ID of the new contact!", Toast.LENGTH_LONG).show()
-        // Check if the user exists
+        // Check if the user exists ---> Create chat
         else findUser(db, userId, contactID)
     }
 
@@ -106,7 +106,7 @@ class HomeActivity : AppCompatActivity()
             .addOnSuccessListener { document ->
                 Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
                 Toast.makeText(this,"New chat created!", Toast.LENGTH_SHORT).show()
-                //addChatMembersDB(db, )
+                addChatMembersDB(db, document.id, userId, contactId)
             }
             .addOnFailureListener {
                     e -> Log.w(TAG, "Error adding document", e)
