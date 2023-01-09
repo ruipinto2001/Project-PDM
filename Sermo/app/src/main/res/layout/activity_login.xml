@@ -27,6 +27,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_title_textview"
 
+        android:text="filipegajo@gmail.com"
+
         android:hint="Email"
         android:layout_marginTop="150dp"
 
@@ -39,6 +41,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_email_edittext"
+
+        android:text="bestsermoappAa1-"
 
         android:hint="Password"
         android:layout_marginTop="50dp"

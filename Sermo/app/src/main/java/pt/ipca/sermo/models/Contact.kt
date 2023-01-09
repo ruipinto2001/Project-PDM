@@ -1,4 +1,6 @@
 package pt.ipca.sermo.models
 
-class Contact {
+class Contact(uid: String)
+{
+    public val Uid = uid
 }

@@ -10,8 +10,15 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.type.DateTime
+import pt.ipca.sermo.models.Chat
+import pt.ipca.sermo.models.Contact
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class HomeActivity : AppCompatActivity()
 {
@@ -25,33 +32,117 @@ class HomeActivity : AppCompatActivity()
 
     fun addNewContact(view: View)
     {
+        // Get database reference
+        val db = Firebase.firestore
+        // Get the uid of the current user
+        val userId = Firebase.auth.currentUser!!.uid
         // Get the value of the XML field
-        val newContactID = contactET.text.toString()
+        val contactID = contactET.text.toString()
 
         // Check if the user filled in the field
-        if (TextUtils.isEmpty(newContactID))
+        if (TextUtils.isEmpty(contactID))
             Toast.makeText(this,"Please write the ID of the new contact!", Toast.LENGTH_LONG).show()
-        else addNewContactDB(newContactID)
+        // Check if the user exists
+        else findUser(db, userId, contactID)
     }
 
-    private fun addNewContactDB(uid: String)
+    private fun findUser(db: FirebaseFirestore, userId: String, contactId: String)
     {
-        val user = Firebase.auth.currentUser
+        val docRef = db.collection("Users").document(contactId)
+        docRef.get()
+            .addOnSuccessListener { document ->
+                // If the user was found
+                if (document != null && document.exists())
+                {
+                    val contactUsername = document.getString("username")
+                    Toast.makeText(this,"User found", Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                    addNewContactDB(db, userId, contactId, contactUsername!!)
+                } else
+                {
+                    Log.d(TAG, "No such document")
+                    Toast.makeText(this,"User not found", Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
 
-        // TODO: check if the user exists
-        // TODO: create new chat in the home screen
+    private fun addNewContactDB(db: FirebaseFirestore, userId: String,
+                                contactId: String, contactUsername: String)
+    {
+        val newContact = Contact(contactId)
 
         // Add the new contact ID to the user's contact list
-        /*val db = Firebase.firestore
         db.collection("Users")
-            .document(user!!.uid)
+            .document(userId)
             .collection("Contacts")
-            .document(uid)
-            .set(uid)
+            .document(contactId)
+            .set(newContact)
             .addOnSuccessListener { _ ->
-                Log.d(TAG,"DocumentSnapshot added with ID: $uid")
-                Toast.makeText(this,"New contact added!", Toast.LENGTH_SHORT).show() }
-            .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }*/
+                Log.d(TAG,"DocumentSnapshot added with ID: $contactId")
+                Toast.makeText(this,"New contact added!", Toast.LENGTH_SHORT).show()
+                addNewChatDB(db, userId, contactId, contactUsername)
+            }
+            .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
+    }
+
+    private fun addNewChatDB(db: FirebaseFirestore, userId: String,
+                     contactId: String, contactUsername: String)
+    {
+        // Format values
+        val lastMessage = "Say hello to $contactUsername!"
+        val time = Calendar.getInstance().time
+        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
+        val lastMsgTimestamp = formatter.format(time)
+
+        // Create Chat object
+        val createdChat = Chat(contactUsername, lastMessage, lastMsgTimestamp)
+
+        // Add chat to the DB
+        db.collection("Chats")
+            .add(createdChat)
+            .addOnSuccessListener { document ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
+                Toast.makeText(this,"New chat created!", Toast.LENGTH_SHORT).show()
+                //addChatMembersDB(db, )
+            }
+            .addOnFailureListener {
+                    e -> Log.w(TAG, "Error adding document", e)
+            }
+
+    }
+
+    private fun addChatMembersDB(db: FirebaseFirestore, chatId: String,
+                                 userId: String, contactId: String)
+    {
+        val newMember1 = Contact(userId)
+        val newMember2 = Contact(contactId)
+
+        // Add a new member to the chat
+        db.collection("Chats")
+            .document(chatId)
+            .collection("Members")
+            .document(userId)
+            .set(newMember1)
+            .addOnSuccessListener { _ ->
+                Log.d(TAG,"DocumentSnapshot added with ID: $contactId")
+                Toast.makeText(this,"New member added to the chat", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
+
+        // Add a new member to the chat
+        db.collection("Chats")
+            .document(chatId)
+            .collection("Members")
+            .document(contactId)
+            .set(newMember2)
+            .addOnSuccessListener { _ ->
+                Log.d(TAG,"DocumentSnapshot added with ID: $contactId")
+                Toast.makeText(this,"New member added to the chat", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
     }
 
     companion object { private const val TAG = "Home" }
