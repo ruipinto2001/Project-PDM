@@ -157,16 +157,17 @@ class RegisterActivity : AppCompatActivity()
 
             // Add user to the DB
             db.collection("Users")
-                .add(createdUser)
-                .addOnSuccessListener { documentReference ->
-                    Log.d("Register",
-                        "DocumentSnapshot added with ID: ${documentReference.id}")
+                .document(createdUser.Uid)
+                .set(createdUser)
+                .addOnSuccessListener { _ ->
+                    Log.d(TAG,
+                        "DocumentSnapshot added with ID: ${createdUser.Uid}")
                     val returnIntent = Intent()
                     setResult(Activity.RESULT_OK, returnIntent)
                     finish() // Exit register activity
                 }
                 .addOnFailureListener {
-                        e -> Log.w("Register", "Error adding document", e) }
+                        e -> Log.w(TAG, "Error adding document", e) }
         }
     }
 
