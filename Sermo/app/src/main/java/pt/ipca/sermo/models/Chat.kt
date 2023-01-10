@@ -1,8 +1,8 @@
 package pt.ipca.sermo.models
 
-class Chat(title: String, lastMessage: String, lastMsgTimestamp: String)
+class Chat(members: List<String>)
 {
-    public val Title = title
-    public val LastMessage = lastMessage
-    public val LastMsgTimestamp = lastMsgTimestamp
+    public val Members = members
 }
+
+// TODO: when a message is sent, add attributes to the chat -> lastMessage + lastMsgTimestamp
