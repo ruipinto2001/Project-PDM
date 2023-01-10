@@ -15,7 +15,8 @@
         app:layout_constraintRight_toRightOf="parent"
 
         android:text="SERMO"
-        android:layout_marginTop="10dp"
+        android:textStyle="italic"
+        android:layout_marginTop="125dp"
         android:textSize="50sp"
         />
 
@@ -30,7 +31,7 @@
         android:text="filipegajo@gmail.com"
 
         android:hint="Email"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
 
         />
 
@@ -46,7 +47,7 @@
         android:inputType="textPassword"
 
         android:hint="Password"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         />
 
     <Button
