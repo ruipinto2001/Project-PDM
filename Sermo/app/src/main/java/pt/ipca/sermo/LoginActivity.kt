@@ -2,23 +2,26 @@ package pt.ipca.sermo
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pt.ipca.sermo.models.User
+
 
 class LoginActivity : AppCompatActivity()
 {
     private lateinit var auth: FirebaseAuth
     private val code = 1001
+    private val buttonClick = AlphaAnimation(1f, 0.8f)
 
     // Get fields from XML
     private val emailET: EditText by lazy { findViewById<EditText>(R.id.login_email_edittext) }
@@ -48,12 +51,20 @@ class LoginActivity : AppCompatActivity()
 
         // Login
         else login(email, password)
+        view.startAnimation(buttonClick);
     }
 
     fun startRegister(view: View)
     {
         val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
         startActivityForResult(intent, code)
+        view.startAnimation(buttonClick);
+    }
+
+    fun fast(view: View)
+    {
+        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -42,7 +42,8 @@
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:background="@drawable/input_box"
-                android:hint="New contact email"/>
+                android:hint="New contact email"
+                android:paddingLeft="10dp"/>
 
             <Button
                 android:id="@+id/home_add_button"
