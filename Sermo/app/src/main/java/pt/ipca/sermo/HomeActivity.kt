@@ -1,7 +1,5 @@
 package pt.ipca.sermo
 
-import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,15 +7,13 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.type.DateTime
 import pt.ipca.sermo.models.Chat
-import pt.ipca.sermo.models.Contact
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class HomeActivity : AppCompatActivity()
@@ -25,12 +21,52 @@ class HomeActivity : AppCompatActivity()
     // Get field from XML
     private val contactET: EditText by lazy { findViewById<EditText>(R.id.home_contact_edittext) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        // RECYCLER VIEW
+        val listaRV = findViewById<RecyclerView>(R.id.home_chats_rv)
+
+        // GET ALL CHATS
     }
 
-    //private fun getAllChats()
+    private fun getAllChats()
+    {
+        val db = Firebase.firestore
+        val docRef = db.collection("Chats").whereEqualTo("members", userEmail).limit(1)
+        docRef.get()
+            .addOnSuccessListener { querySnapshot ->
+                // If the user was found
+                if (!querySnapshot.isEmpty)
+                {
+                    val documentFound = querySnapshot.documents[0]
+                    val userId = documentFound.getString("uid")
+                    Toast.makeText(this,"User found", Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "DocumentSnapshot data: ${documentFound.data}")
+
+                    // Create chat with the new user
+                    createChatDB(userId!!)
+                } else
+                {
+                    Log.d(TAG, "No such document")
+                    Toast.makeText(this,"User not found", Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
+        db.collection("Chats")
+            .get()
+            .addOnSuccessListener { document ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
+                Toast.makeText(this,"New chat created!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                    e -> Log.w(TAG, "Error adding document", e)
+            }
+    }
 
     fun addNewContact(view: View)
     {
@@ -49,7 +85,7 @@ class HomeActivity : AppCompatActivity()
     private fun findUserByEmail(userEmail: String)
     {
         val db = Firebase.firestore
-        val docRef = db.collection("Users").whereEqualTo("email", userEmail)
+        val docRef = db.collection("Users").whereEqualTo("email", userEmail).limit(1)
         docRef.get()
             .addOnSuccessListener { querySnapshot ->
                 // If the user was found
