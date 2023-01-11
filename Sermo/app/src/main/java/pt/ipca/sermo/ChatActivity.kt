@@ -13,6 +13,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pt.ipca.sermo.adapters.MyAdapterRec
 import pt.ipca.sermo.models.ChatDto
+import pt.ipca.sermo.models.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -81,13 +82,33 @@ class ChatActivity : AppCompatActivity()
     fun sendNewMessage(view: View)
     {
         // Get the value of the XML field
-        val message = messageBoxET.text.toString()
+        val content = messageBoxET.text.toString()
 
         // Check if the user filled in the field
-        if (TextUtils.isEmpty(message))
+        if (TextUtils.isEmpty(content))
             Toast.makeText(this,"Please write something before sending a message!",
                 Toast.LENGTH_LONG).show()
-        //else
+        else
+        {
+            // Get current date and time
+            val timestamp = getCurrentFormattedDateTime()
+
+            // Create message object
+            val createdMessage = Message(content, timestamp)
+
+            // Add message to the DB
+            val db = Firebase.firestore
+            val docRef = db.collection("Chats").document(chatId).
+                            collection("Messages")
+            docRef.add(createdMessage)
+                .addOnSuccessListener { document ->
+                    Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
+                    Toast.makeText(this,"New message sent!", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                        e -> Log.w(TAG, "Error adding document", e)
+                }
+        }
     }
 
     private fun getCurrentFormattedDateTime(): String
@@ -98,4 +119,6 @@ class ChatActivity : AppCompatActivity()
 
         return formattedDateTime
     }
+
+    companion object { private const val TAG = "Chat" }
 }
