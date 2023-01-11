@@ -13,10 +13,11 @@ class MyAdapterRec(private val mList: MutableList<ChatDto>) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: MyAdapterRecViewHolder, position: Int)
     {
+        val chatId = mList.get(position).ChatId
         val chatTitle = mList.get(position).Title
         val timestamp = mList.get(position).Timestamp
         val lastMessage = mList.get(position).LastMessage
-        holder.bindData(chatTitle, timestamp, lastMessage)
+        holder.bindData(chatId, chatTitle, timestamp, lastMessage)
     }
 
     override fun getItemCount(): Int {

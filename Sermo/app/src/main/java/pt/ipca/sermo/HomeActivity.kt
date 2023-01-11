@@ -34,7 +34,6 @@ class HomeActivity : AppCompatActivity()
         val rvList = findViewById<RecyclerView>(R.id.home_chats_rv)
 
         // GET ALL CHATS
-        //getAllChats(rvList)
         chatListener(rvList)
     }
 
@@ -54,6 +53,8 @@ class HomeActivity : AppCompatActivity()
             var chatsList: MutableList<ChatDto> = mutableListOf()
             for (document in result!!)
             {
+                val chatId = document.id
+
                 var title = document.getString("title")
                 // Each user has a different title => the other members' names
                 // (if there is no user assigned title to the chat)
@@ -70,7 +71,7 @@ class HomeActivity : AppCompatActivity()
                 var timestamp = document.getString("timestamp")
                 if (timestamp == "Timestamp") timestamp = "Now? ^^"
 
-                val importedChat = ChatDto(title!!, lastMessage!!, timestamp!!)
+                val importedChat = ChatDto(chatId, title!!, lastMessage!!, timestamp!!)
                 chatsList.add(importedChat)
                 Log.d(TAG, "${document.id} => ${document.data}")
             }
@@ -152,14 +153,7 @@ class HomeActivity : AppCompatActivity()
             }
     }
 
-    private fun getCurrentFormattedDateTime(): String
-    {
-        val time = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
-        val formattedDateTime = formatter.format(time)
 
-        return formattedDateTime
-    }
 
     private fun findUserById(db: FirebaseFirestore, userId: String, contactId: String)
     {
