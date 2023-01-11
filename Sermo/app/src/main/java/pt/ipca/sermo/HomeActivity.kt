@@ -34,30 +34,48 @@ class HomeActivity : AppCompatActivity()
         val rvList = findViewById<RecyclerView>(R.id.home_chats_rv)
 
         // GET ALL CHATS
-        getAllChats(rvList)
+        //getAllChats(rvList)
+        chatListener(rvList)
     }
 
-    private fun getAllChats(rvList: RecyclerView)
+    private fun chatListener(rvList: RecyclerView)
     {
+        // Get the uid of the current user
+        val userId = Firebase.auth.currentUser!!.uid
+
         val db = Firebase.firestore
-        val docRef = db.collection("Chats")
-        docRef.get()
-            .addOnSuccessListener { result ->
-                var chatsList: MutableList<ChatDto> = mutableListOf()
-                for (document in result)
+        val docRef = db.collection("Chats").whereArrayContains("members", userId)
+        docRef.addSnapshotListener { result, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            var chatsList: MutableList<ChatDto> = mutableListOf()
+            for (document in result!!)
+            {
+                var title = document.getString("title")
+                // Each user has a different title => the other members' names
+                // (if there is no user assigned title to the chat)
+                if (title == "Title")
                 {
-                    val title = document.getString("title")
-                    val lastMessage = document.getString("lastMessage")
-                    val timestamp = document.getString("timestamp")
-                    val importedChat = ChatDto(title!!, lastMessage!!, timestamp!!)
-                    chatsList.add(importedChat)
-                    Log.d(TAG, "${document.id} => ${document.data}")
+                    title = ""
+                    val members = document.get("members") as List<String>
+                    for (m in members) if (m != userId) title += "$m "
                 }
-                show(MyAdapterRec(chatsList), rvList)
+
+                var lastMessage = document.getString("lastMessage")
+                if (lastMessage == "LastMessage") lastMessage = "Say hi in the chat!"
+
+                var timestamp = document.getString("timestamp")
+                if (timestamp == "Timestamp") timestamp = "Now? ^^"
+
+                val importedChat = ChatDto(title!!, lastMessage!!, timestamp!!)
+                chatsList.add(importedChat)
+                Log.d(TAG, "${document.id} => ${document.data}")
             }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents: ", exception)
-            }
+            show(MyAdapterRec(chatsList), rvList)
+        }
     }
 
     fun show(adapter: MyAdapterRec, recyclerView: RecyclerView)
@@ -66,6 +84,7 @@ class HomeActivity : AppCompatActivity()
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
+        recyclerView.setOnFlingListener(null);
         PagerSnapHelper().attachToRecyclerView(recyclerView) // snap pics
     }
 
