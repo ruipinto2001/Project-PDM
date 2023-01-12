@@ -1,18 +1,14 @@
 package pt.ipca.sermo.adapters
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipca.sermo.ChatActivity
-import pt.ipca.sermo.HomeActivity
 import pt.ipca.sermo.R
 
-class MyAdapterRecViewHolder(inflater: LayoutInflater, val parent: ViewGroup) :
+class ChatAdapterViewHolder(inflater: LayoutInflater, val parent: ViewGroup) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.layout_row, parent, false))
 {
     private var tvChatTitle: TextView? = itemView.findViewById(R.id.home_chatTitle)

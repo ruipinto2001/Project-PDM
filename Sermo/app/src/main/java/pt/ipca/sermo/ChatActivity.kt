@@ -1,21 +1,26 @@
 package pt.ipca.sermo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.View.OnLayoutChangeListener
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import pt.ipca.sermo.adapters.MyAdapterRec
-import pt.ipca.sermo.models.ChatDto
+import pt.ipca.sermo.adapters.MessageAdapter
 import pt.ipca.sermo.models.Message
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ChatActivity : AppCompatActivity()
 {
@@ -23,7 +28,8 @@ class ChatActivity : AppCompatActivity()
     private val messageBoxET: EditText by lazy {
         findViewById<EditText>(R.id.chat_messageBox_edittext) }
 
-    lateinit private var chatId: String
+    private lateinit var chatId: String
+    private var messageCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -32,51 +38,67 @@ class ChatActivity : AppCompatActivity()
 
         // RECYCLER VIEW
         val rvList = findViewById<RecyclerView>(R.id.chat_messages_rv)
+        // Separate list items with space and line
+        rvList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        // Adjust list when keyboard opens
+        rvList.addOnLayoutChangeListener(OnLayoutChangeListener {
+                view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            if (bottom < oldBottom) {
+                rvList.postDelayed(
+                    Runnable { rvList.scrollToPosition(messageCount - 1) },
+                    100
+                )
+            }
+        })
 
+        // Contact name (on top)
         chatId = intent.getStringExtra("ChatId")!!
+        val tvContactName = findViewById<TextView>(R.id.chat_contact_textview)
+        tvContactName.text = chatId
 
         // GET ALL CHATS
-        //messageListener(rvList)
+        messageListener(rvList)
     }
 
     private fun messageListener(rvList: RecyclerView)
-    {/*
+    {
         // Get the uid of the current user
         val userId = Firebase.auth.currentUser!!.uid
 
         val db = Firebase.firestore
-        val docRef = db.collection("Messages").whereArrayContains("members", userId)
+        val docRef = db.collection("Chats").document(chatId).
+                        collection("Messages").orderBy("timestamp")
         docRef.addSnapshotListener { result, e ->
             if (e != null) {
-                Log.w(HomeActivity.TAG, "Listen failed.", e)
+                Log.w(TAG, "Listen failed.", e)
                 return@addSnapshotListener
             }
 
-            var chatsList: MutableList<ChatDto> = mutableListOf()
+            val messageList: MutableList<Message> = mutableListOf()
             for (document in result!!)
             {
-                var title = document.getString("title")
-                // Each user has a different title => the other members' names
-                // (if there is no user assigned title to the chat)
-                if (title == "Title")
-                {
-                    title = ""
-                    val members = document.get("members") as List<String>
-                    for (m in members) if (m != userId) title += "$m "
-                }
+                val author = document.getString("author")
+                val content = document.getString("content")
+                val time = document.getString("time")
+                val timestamp = document.getString("timestamp")
 
-                var lastMessage = document.getString("lastMessage")
-                if (lastMessage == "LastMessage") lastMessage = "Say hi in the chat!"
-
-                var timestamp = document.getString("timestamp")
-                if (timestamp == "Timestamp") timestamp = "Now? ^^"
-
-                val importedChat = ChatDto(title!!, lastMessage!!, timestamp!!)
-                chatsList.add(importedChat)
-                Log.d(HomeActivity.TAG, "${document.id} => ${document.data}")
+                val importedMessage = Message(author!!, content!!, time!!, timestamp!!)
+                messageList.add(importedMessage)
+                Log.d(TAG, "${document.id} => ${document.data}")
             }
-            show(MyAdapterRec(chatsList), rvList)
-        }*/
+            show(MessageAdapter(messageList), rvList)
+        }
+    }
+
+    private fun show(adapter: MessageAdapter, recyclerView: RecyclerView)
+    {
+        recyclerView.adapter = adapter
+        val linearLayoutManager = LinearLayoutManager(this)
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.setOnFlingListener(null);
+        messageCount = adapter.itemCount
+        recyclerView.scrollToPosition(messageCount - 1)
     }
 
     fun sendNewMessage(view: View)
@@ -90,11 +112,20 @@ class ChatActivity : AppCompatActivity()
                 Toast.LENGTH_LONG).show()
         else
         {
-            // Get current date and time
-            val timestamp = getCurrentFormattedDateTime()
+            // Remove text written in message box (to make it easier to send another message)
+            messageBoxET.setText("")
+
+            // Get timestamp
+            val timestamp = System.currentTimeMillis().toString()
+
+            // Get current formatted date and time
+            val time = getCurrentFormattedDateTime()
+
+            // Get the uid of the current user
+            val userId = Firebase.auth.currentUser!!.uid
 
             // Create message object
-            val createdMessage = Message(content, timestamp)
+            val createdMessage = Message(userId, content, time, timestamp)
 
             // Add message to the DB
             val db = Firebase.firestore
@@ -114,7 +145,7 @@ class ChatActivity : AppCompatActivity()
     private fun getCurrentFormattedDateTime(): String
     {
         val time = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
+        val formatter = SimpleDateFormat("HH:mm")
         val formattedDateTime = formatter.format(time)
 
         return formattedDateTime
