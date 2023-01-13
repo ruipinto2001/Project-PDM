@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -23,6 +24,7 @@ class HomeActivity : AppCompatActivity()
 {
     // Get field from XML
     private val contactET: EditText by lazy { findViewById<EditText>(R.id.home_contact_edittext) }
+    private val buttonClick = AlphaAnimation(1f, 0.8f)
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -100,6 +102,7 @@ class HomeActivity : AppCompatActivity()
             Toast.makeText(this,"Please write the ID of the new contact!", Toast.LENGTH_LONG).show()
         // Check if user exists
         else findUserByEmail(contactEmail)
+        view.startAnimation(buttonClick);
     }
 
     private fun findUserByEmail(userEmail: String)

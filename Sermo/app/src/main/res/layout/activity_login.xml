@@ -15,7 +15,8 @@
         app:layout_constraintRight_toRightOf="parent"
 
         android:text="SERMO"
-        android:layout_marginTop="10dp"
+        android:textStyle="italic"
+        android:layout_marginTop="125dp"
         android:textSize="50sp"
         />
 
@@ -30,7 +31,7 @@
         android:text="filipegajo@gmail.com"
 
         android:hint="Email"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
 
         />
 
@@ -43,9 +44,10 @@
         app:layout_constraintTop_toBottomOf="@+id/login_email_edittext"
 
         android:text="bestsermoappAa1-"
+        android:inputType="textPassword"
 
         android:hint="Password"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         />
 
     <Button
@@ -70,7 +72,17 @@
 
         android:text="REGISTER"
         android:layout_marginLeft="5dp"
-        android:onClick="startRegister"
-        />
+        android:onClick="startRegister"/>
+
+    <Button
+        android:id="@+id/button_fast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:text="FAST"
+        android:layout_marginLeft="150dp"
+        android:onClick="fast"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
