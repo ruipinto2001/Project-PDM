@@ -55,6 +55,12 @@ class HomeActivity : AppCompatActivity()
         val db = Firebase.firestore
         val chatIds = mutableListOf<String>()
         val docRef = db.collectionGroup("Members").whereEqualTo("uid", userId)
+        // Add listener
+        docRef.addSnapshotListener { result, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
         docRef.get().addOnCompleteListener { queryDocumentSnapshots ->
             for (doc in queryDocumentSnapshots.result.documents)
             {
@@ -62,35 +68,40 @@ class HomeActivity : AppCompatActivity()
                 chatIds.add(chatId!!)
             }
 
-            // Create query of all the chats
-            val docRefChats = db.collection("Chats").whereIn(FieldPath.documentId(), chatIds)
+            // If the user has chats
+            if (chatIds.isNotEmpty())
+            {
+                // Create query of all the chats
+                val docRefChats = db.collection("Chats").
+                                    whereIn(FieldPath.documentId(), chatIds)
 
-            // Add listener
-            docRefChats.addSnapshotListener { result, e ->
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e)
-                    return@addSnapshotListener
+                /*// Add listener
+                docRefChats.addSnapshotListener { result, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }*/
+
+                    val chatsList: MutableList<ChatDto> = mutableListOf()
+                    for (document in result!!)
+                    {
+                        val chatId = document.id
+
+                        // Each user has a different title => the other members' names
+                        var title = document.getString("title")
+
+                        var lastMessage = document.getString("lastMessage")
+                        if (lastMessage == "LastMessage") lastMessage = "Say hi in the chat!"
+
+                        var time = document.getString("time")
+                        if (time == "Time") time = "Now? ^^"
+
+                        val importedChat = ChatDto(chatId, title!!, lastMessage!!, time!!)
+                        chatsList.add(importedChat)
+                        Log.d(TAG, "${document.id} => ${document.data}")
+                    }
+                    show(ChatAdapter(chatsList, username), rvList)
                 }
-
-                val chatsList: MutableList<ChatDto> = mutableListOf()
-                for (document in result!!)
-                {
-                    val chatId = document.id
-
-                    // Each user has a different title => the other members' names
-                    var title = document.getString("title")
-
-                    var lastMessage = document.getString("lastMessage")
-                    if (lastMessage == "LastMessage") lastMessage = "Say hi in the chat!"
-
-                    var time = document.getString("time")
-                    if (time == "Time") time = "Now? ^^"
-
-                    val importedChat = ChatDto(chatId, title!!, lastMessage!!, time!!)
-                    chatsList.add(importedChat)
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                }
-                show(ChatAdapter(chatsList), rvList)
             }
         }
     }
@@ -178,8 +189,8 @@ class HomeActivity : AppCompatActivity()
                 {
                     // Automatically generate unique id
                     val docRefMembers = db.collection("Chats").document(chatId).
-                    collection("Members").document()
-                    batch.set(docRefMembers, memberUser)
+                                            collection("Members").document()
+                    batch.set(docRefMembers, member)
                 }
                 batch.commit()
 

@@ -29,6 +29,7 @@ class ChatActivity : AppCompatActivity()
         findViewById<EditText>(R.id.chat_messageBox_edittext) }
 
     private lateinit var chatId: String
+    private lateinit var username: String
     private var messageCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -53,6 +54,7 @@ class ChatActivity : AppCompatActivity()
 
         // Contact name (on top)
         chatId = intent.getStringExtra("ChatId")!!
+        username = intent.getStringExtra("Username")!!
         val tvContactName = findViewById<TextView>(R.id.chat_contact_textview)
         tvContactName.text = chatId
 
@@ -77,14 +79,15 @@ class ChatActivity : AppCompatActivity()
             val messageList: MutableList<Message> = mutableListOf()
             for (document in result!!)
             {
-                val author = document.getString("author")
+                val authorId = document.getString("authorId")
+                val authorUsername = document.getString("authorUsername")
                 val content = document.getString("content")
                 val time = document.getString("time")
                 val timestamp = document.getString("timestamp")
                 val state = document.getString("state")
 
                 // Check if the message is from another user and is not assigned as "read" yet
-                if (author != userId && state != "read")
+                if (authorId != userId && state != "read")
                 {
                     // Update message state
                     val docRefUpdate = db.collection("Chats").document(chatId).
@@ -92,7 +95,7 @@ class ChatActivity : AppCompatActivity()
                     docRefUpdate.update("state", "read")
                 }
 
-                val importedMessage = Message(author!!, content!!, time!!, timestamp!!, state!!)
+                val importedMessage = Message(authorId!!, authorUsername!!, content!!, time!!, timestamp!!, state!!)
                 messageList.add(importedMessage)
                 Log.d(TAG, "${document.id} => ${document.data}")
             }
@@ -135,7 +138,7 @@ class ChatActivity : AppCompatActivity()
             val userId = Firebase.auth.currentUser!!.uid
 
             // Create message object
-            val createdMessage = Message(userId, content, time, timestamp, "sent")
+            val createdMessage = Message(userId, username, content, time, timestamp, "sent")
 
             // Add message to the DB
             val db = Firebase.firestore

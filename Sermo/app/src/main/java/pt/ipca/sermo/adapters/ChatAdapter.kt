@@ -10,10 +10,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pt.ipca.sermo.models.ChatDto
 
-class ChatAdapter(private val mList: MutableList<ChatDto>) : RecyclerView.Adapter<ChatAdapterViewHolder>() {
+class ChatAdapter(private val mList: MutableList<ChatDto>, private val username: String) : RecyclerView.Adapter<ChatAdapterViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatAdapterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ChatAdapterViewHolder(inflater, parent)
+        return ChatAdapterViewHolder(inflater, parent, username)
     }
 
     override fun onBindViewHolder(holder: ChatAdapterViewHolder, position: Int)
@@ -46,15 +46,12 @@ class ChatAdapter(private val mList: MutableList<ChatDto>) : RecyclerView.Adapte
                             chatTitle += "$memberUsername "
                         }
                     }
+                    holder.bindData(chatId, chatTitle, timestamp, lastMessage)
                 }
                 .addOnFailureListener { exception ->
                     Log.d("Home", "Error getting documents: ", exception)
                 }
-
-
         }
-
-        holder.bindData(chatId, chatTitle, timestamp, lastMessage)
     }
 
     override fun getItemCount(): Int {

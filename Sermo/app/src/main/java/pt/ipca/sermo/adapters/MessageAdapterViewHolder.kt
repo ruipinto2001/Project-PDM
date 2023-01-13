@@ -19,16 +19,16 @@ class MessageAdapterViewHolder(inflater: LayoutInflater, val parent: ViewGroup) 
     private var tvTime: TextView? = itemView.findViewById(R.id.message_time)
     private var ivCheck: ImageView? = itemView.findViewById(R.id.message_check)
 
-    fun bindData(author: String, content: String, time: String, state: String)
+    fun bindData(authorId: String, authorUsername: String, content: String, time: String, state: String)
     {
-        tvAuthor?.text = author
+        tvAuthor?.text = authorUsername
         tvContent?.text = content
         tvTime?.text = time
 
         // Get the uid of the current user
         val userId = Firebase.auth.currentUser!!.uid
         // Check if the message is from the user
-        if (author == userId)
+        if (authorId == userId)
         {
             // Change check image if needed
             if (state == "received") ivCheck!!.setImageResource(R.drawable.tick)
