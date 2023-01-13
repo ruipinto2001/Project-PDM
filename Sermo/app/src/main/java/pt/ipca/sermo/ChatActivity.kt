@@ -129,9 +129,10 @@ class ChatActivity : AppCompatActivity()
 
             // Add message to the DB
             val db = Firebase.firestore
-            val docRef = db.collection("Chats").document(chatId).
-                            collection("Messages")
-            docRef.add(createdMessage)
+            val docRefChat = db.collection("Chats").document(chatId)
+            val docRefMessages = docRefChat.collection("Messages")
+
+            docRefMessages.add(createdMessage)
                 .addOnSuccessListener { document ->
                     Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
                     Toast.makeText(this,"New message sent!", Toast.LENGTH_SHORT).show()
@@ -139,6 +140,9 @@ class ChatActivity : AppCompatActivity()
                 .addOnFailureListener {
                         e -> Log.w(TAG, "Error adding document", e)
                 }
+
+            // Update chat
+            docRefChat.update("lastMessage", content, "time", time)
         }
     }
 

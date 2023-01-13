@@ -68,10 +68,10 @@ class HomeActivity : AppCompatActivity()
                 var lastMessage = document.getString("lastMessage")
                 if (lastMessage == "LastMessage") lastMessage = "Say hi in the chat!"
 
-                var timestamp = document.getString("timestamp")
-                if (timestamp == "Timestamp") timestamp = "Now? ^^"
+                var time = document.getString("time")
+                if (time == "Time") time = "Now? ^^"
 
-                val importedChat = ChatDto(chatId, title!!, lastMessage!!, timestamp!!)
+                val importedChat = ChatDto(chatId, title!!, lastMessage!!, time!!)
                 chatsList.add(importedChat)
                 Log.d(TAG, "${document.id} => ${document.data}")
             }
@@ -138,7 +138,7 @@ class HomeActivity : AppCompatActivity()
 
         // Create Chat object
         val createdChat = Chat(members, "Title",
-            "LastMessage", "Timestamp", false)
+            "LastMessage", "Time", false)
 
         // Add chat to the DB
         val db = Firebase.firestore

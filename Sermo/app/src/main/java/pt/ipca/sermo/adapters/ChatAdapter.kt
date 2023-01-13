@@ -15,7 +15,7 @@ class ChatAdapter(private val mList: MutableList<ChatDto>) : RecyclerView.Adapte
     {
         val chatId = mList.get(position).ChatId
         val chatTitle = mList.get(position).Title
-        val timestamp = mList.get(position).Timestamp
+        val timestamp = mList.get(position).Time
         val lastMessage = mList.get(position).LastMessage
         holder.bindData(chatId, chatTitle, timestamp, lastMessage)
     }
