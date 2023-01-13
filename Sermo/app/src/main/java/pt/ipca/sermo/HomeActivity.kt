@@ -1,5 +1,6 @@
 package pt.ipca.sermo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -13,15 +14,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pt.ipca.sermo.adapters.ChatAdapter
 import pt.ipca.sermo.models.Chat
 import pt.ipca.sermo.models.ChatDto
+import pt.ipca.sermo.models.Member
 
 class HomeActivity : AppCompatActivity()
 {
+    private lateinit var username: String
+
     // Get field from XML
     private val contactET: EditText by lazy { findViewById<EditText>(R.id.home_contact_edittext) }
     private val buttonClick = AlphaAnimation(1f, 0.8f)
@@ -30,6 +35,8 @@ class HomeActivity : AppCompatActivity()
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        username = intent.getStringExtra("Username")!!
 
         // RECYCLER VIEW
         val rvList = findViewById<RecyclerView>(R.id.home_chats_rv)
@@ -44,40 +51,47 @@ class HomeActivity : AppCompatActivity()
         // Get the uid of the current user
         val userId = Firebase.auth.currentUser!!.uid
 
+        // Get Chat IDs of the chats where the user is in the members
         val db = Firebase.firestore
-        val docRef = db.collection("Chats").whereArrayContains("members", userId)
-        docRef.addSnapshotListener { result, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
+        val chatIds = mutableListOf<String>()
+        val docRef = db.collectionGroup("Members").whereEqualTo("uid", userId)
+        docRef.get().addOnCompleteListener { queryDocumentSnapshots ->
+            for (doc in queryDocumentSnapshots.result.documents)
+            {
+                val chatId = doc.getString("chatId")
+                chatIds.add(chatId!!)
             }
 
-            var chatsList: MutableList<ChatDto> = mutableListOf()
-            for (document in result!!)
-            {
-                val chatId = document.id
+            // Create query of all the chats
+            val docRefChats = db.collection("Chats").whereIn(FieldPath.documentId(), chatIds)
 
-                var title = document.getString("title")
-                // Each user has a different title => the other members' names
-                // (if there is no user assigned title to the chat)
-                if (title == "Title")
-                {
-                    title = ""
-                    val members = document.get("members") as List<String>
-                    for (m in members) if (m != userId) title += "$m "
+            // Add listener
+            docRefChats.addSnapshotListener { result, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
                 }
 
-                var lastMessage = document.getString("lastMessage")
-                if (lastMessage == "LastMessage") lastMessage = "Say hi in the chat!"
+                val chatsList: MutableList<ChatDto> = mutableListOf()
+                for (document in result!!)
+                {
+                    val chatId = document.id
 
-                var time = document.getString("time")
-                if (time == "Time") time = "Now? ^^"
+                    // Each user has a different title => the other members' names
+                    var title = document.getString("title")
 
-                val importedChat = ChatDto(chatId, title!!, lastMessage!!, time!!)
-                chatsList.add(importedChat)
-                Log.d(TAG, "${document.id} => ${document.data}")
+                    var lastMessage = document.getString("lastMessage")
+                    if (lastMessage == "LastMessage") lastMessage = "Say hi in the chat!"
+
+                    var time = document.getString("time")
+                    if (time == "Time") time = "Now? ^^"
+
+                    val importedChat = ChatDto(chatId, title!!, lastMessage!!, time!!)
+                    chatsList.add(importedChat)
+                    Log.d(TAG, "${document.id} => ${document.data}")
+                }
+                show(ChatAdapter(chatsList), rvList)
             }
-            show(ChatAdapter(chatsList), rvList)
         }
     }
 
@@ -121,11 +135,12 @@ class HomeActivity : AppCompatActivity()
                 {
                     val documentFound = querySnapshot.documents[0]
                     val userId = documentFound.getString("uid")
+                    val username = documentFound.getString("username")
                     Toast.makeText(this,"User found", Toast.LENGTH_LONG).show()
                     Log.d(TAG, "DocumentSnapshot data: ${documentFound.data}")
 
                     // Create chat with the new user
-                    createChatDB(userId!!)
+                    createChatDB(userId!!, username!!)
                 } else
                 {
                     Log.d(TAG, "No such document")
@@ -137,22 +152,37 @@ class HomeActivity : AppCompatActivity()
             }
     }
 
-    private fun createChatDB(contactId: String)
+    private fun createChatDB(contactId: String, contactUsername: String)
     {
+        val db = Firebase.firestore
+        val batch = db.batch()
         val userId = Firebase.auth.currentUser!!.uid
 
-        // Create list of chat members
-        val members = listOf<String>(userId, contactId)
-
         // Create Chat object
-        val createdChat = Chat(members, "Title",
+        val createdChat = Chat("Title",
             "LastMessage", "Time", false)
 
-        // Add chat to the DB
-        val db = Firebase.firestore
+        // Add changes to the DB
         db.collection("Chats")
             .add(createdChat)
             .addOnSuccessListener { document ->
+                val chatId = document.id
+
+                // Create members
+                val memberUser = Member(chatId, userId, username, false)
+                val memberAdded = Member(chatId, contactId, contactUsername, false)
+                val membersToAdd = listOf(memberUser, memberAdded)
+
+                // Add members in one batch/write/update
+                for (member in membersToAdd)
+                {
+                    // Automatically generate unique id
+                    val docRefMembers = db.collection("Chats").document(chatId).
+                    collection("Members").document()
+                    batch.set(docRefMembers, memberUser)
+                }
+                batch.commit()
+
                 Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
                 Toast.makeText(this,"New chat created!", Toast.LENGTH_SHORT).show()
             }
@@ -160,107 +190,6 @@ class HomeActivity : AppCompatActivity()
                     e -> Log.w(TAG, "Error adding document", e)
             }
     }
-
-    private fun findUserById(db: FirebaseFirestore, userId: String, contactId: String)
-    {
-        val docRef = db.collection("Users").document(contactId)
-        docRef.get()
-            .addOnSuccessListener { document ->
-                // If the user was found
-                if (document != null && document.exists())
-                {
-                    val contactUsername = document.getString("username")
-                    Toast.makeText(this,"User found", Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                }
-                else
-                {
-                    Log.d(TAG, "No such document")
-                    Toast.makeText(this,"User not found", Toast.LENGTH_LONG).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
-            }
-    }
-
-    /*
-    private fun addNewContactDB(db: FirebaseFirestore, userId: String,
-                                contactId: String, contactUsername: String)
-    {
-        val newContact = Contact(contactId)
-
-        // Add the new contact ID to the user's contact list
-        db.collection("Users")
-            .document(userId)
-            .collection("Contacts")
-            .document(contactId)
-            .set(newContact)
-            .addOnSuccessListener { _ ->
-                Log.d(TAG,"DocumentSnapshot added with ID: $contactId")
-                Toast.makeText(this,"New contact added!", Toast.LENGTH_SHORT).show()
-                addNewChatDB(db, userId, contactId, contactUsername)
-            }
-            .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
-    }
-
-    private fun addNewChatDB(db: FirebaseFirestore, userId: String,
-                     contactId: String, contactUsername: String)
-    {
-        // Format values
-        val lastMessage = "Say hello to $contactUsername!"
-        val time = Calendar.getInstance().time
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm")
-        val lastMsgTimestamp = formatter.format(time)
-
-        // Create Chat object
-        val createdChat = Chat(contactUsername, lastMessage, lastMsgTimestamp)
-
-        // Add chat to the DB
-        db.collection("Chats")
-            .add(createdChat)
-            .addOnSuccessListener { document ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
-                Toast.makeText(this,"New chat created!", Toast.LENGTH_SHORT).show()
-                addChatMembersDB(db, document.id, userId, contactId)
-            }
-            .addOnFailureListener {
-                    e -> Log.w(TAG, "Error adding document", e)
-            }
-
-    }
-
-    private fun addChatMembersDB(db: FirebaseFirestore, chatId: String,
-                                 userId: String, contactId: String)
-    {
-        val newMember1 = Contact(userId)
-        val newMember2 = Contact(contactId)
-
-        // Add a new member to the chat
-        db.collection("Chats")
-            .document(chatId)
-            .collection("Members")
-            .document(userId)
-            .set(newMember1)
-            .addOnSuccessListener { _ ->
-                Log.d(TAG,"DocumentSnapshot added with ID: $contactId")
-                Toast.makeText(this,"New member added to the chat", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
-
-        // Add a new member to the chat
-        db.collection("Chats")
-            .document(chatId)
-            .collection("Members")
-            .document(contactId)
-            .set(newMember2)
-            .addOnSuccessListener { _ ->
-                Log.d(TAG,"DocumentSnapshot added with ID: $contactId")
-                Toast.makeText(this,"New member added to the chat", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
-    }
-    */
 
     companion object { private const val TAG = "Home" }
 }

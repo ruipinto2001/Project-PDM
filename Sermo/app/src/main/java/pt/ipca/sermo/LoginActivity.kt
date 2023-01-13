@@ -86,14 +86,44 @@ class LoginActivity : AppCompatActivity()
                 if (task.isSuccessful)
                 {
                     Log.d(TAG, "login:success")
-                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                    startActivity(intent)
+                    // Get the uid of the current user
+                    val userId = Firebase.auth.currentUser!!.uid
+                    // Get username to pass to next activity
+                    getUsernameById(userId)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "login:failure", task.exception)
                     Toast.makeText(this, "Authentication failed.",
                         Toast.LENGTH_LONG).show()
                 }
+            }
+    }
+
+    private fun getUsernameById(userId: String)
+    {
+        val db = Firebase.firestore
+        val docRef = db.collection("Users").document(userId)
+        docRef.get()
+            .addOnSuccessListener { document ->
+                // If the user was found
+                if (document != null && document.exists())
+                {
+                    val username = document.getString("username")
+                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+
+                    // Switch activity after login
+                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                    intent.putExtra("Username", username)
+                    startActivity(intent)
+                }
+                else
+                {
+                    Log.d(TAG, "No such document")
+                    Toast.makeText(this,"User not found", Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
             }
     }
 
