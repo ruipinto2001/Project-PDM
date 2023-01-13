@@ -16,8 +16,9 @@ class MessageAdapter(private val mList: MutableList<Message>) : RecyclerView.Ada
         val author = mList.get(position).Author
         val content = mList.get(position).Content
         val time = mList.get(position).Time
+        val state = mList.get(position).State
 
-        holder.bindData(author, content, time)
+        holder.bindData(author, content, time, state)
     }
 
     override fun getItemCount(): Int {

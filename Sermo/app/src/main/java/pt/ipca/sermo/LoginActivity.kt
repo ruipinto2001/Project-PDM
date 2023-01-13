@@ -35,6 +35,9 @@ class LoginActivity : AppCompatActivity()
 
         // Initialize Firebase Auth
         auth = Firebase.auth
+
+        // Logout
+        auth.signOut()
     }
 
     fun doLogin(view: View)

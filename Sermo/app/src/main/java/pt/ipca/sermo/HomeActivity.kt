@@ -100,8 +100,13 @@ class HomeActivity : AppCompatActivity()
         // Check if the user filled in the field
         if (TextUtils.isEmpty(contactEmail))
             Toast.makeText(this,"Please write the ID of the new contact!", Toast.LENGTH_LONG).show()
-        // Check if user exists
-        else findUserByEmail(contactEmail)
+        else
+        {
+            // Remove text written in contact box
+            contactET.setText("")
+            // Check if user exists
+            findUserByEmail(contactEmail)
+        }
         view.startAnimation(buttonClick);
     }
 

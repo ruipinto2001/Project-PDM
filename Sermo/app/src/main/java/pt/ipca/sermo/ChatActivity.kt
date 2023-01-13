@@ -81,8 +81,18 @@ class ChatActivity : AppCompatActivity()
                 val content = document.getString("content")
                 val time = document.getString("time")
                 val timestamp = document.getString("timestamp")
+                val state = document.getString("state")
 
-                val importedMessage = Message(author!!, content!!, time!!, timestamp!!)
+                // Check if the message is from another user and is not assigned as "read" yet
+                if (author != userId && state != "read")
+                {
+                    // Update message state
+                    val docRefUpdate = db.collection("Chats").document(chatId).
+                                        collection("Messages").document(document.id)
+                    docRefUpdate.update("state", "read")
+                }
+
+                val importedMessage = Message(author!!, content!!, time!!, timestamp!!, state!!)
                 messageList.add(importedMessage)
                 Log.d(TAG, "${document.id} => ${document.data}")
             }
@@ -125,7 +135,7 @@ class ChatActivity : AppCompatActivity()
             val userId = Firebase.auth.currentUser!!.uid
 
             // Create message object
-            val createdMessage = Message(userId, content, time, timestamp)
+            val createdMessage = Message(userId, content, time, timestamp, "sent")
 
             // Add message to the DB
             val db = Firebase.firestore
