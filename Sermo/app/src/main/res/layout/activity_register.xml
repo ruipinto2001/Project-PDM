@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    tools:context=".RegisterActivity"
+    android:background="@drawable/background">
 
     <TextView
         android:id="@+id/register_title_textview"
@@ -14,6 +15,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:text="New Account"
+        android:textColor="@color/white"
         android:textStyle="italic"
         android:layout_marginTop="75dp"
         android:textSize="50sp"
@@ -27,6 +29,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_title_textview"
         android:hint="Username"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
         android:layout_marginTop="25dp"
         />
 
@@ -37,6 +41,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_username_edittext"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
 
         android:hint="Email"
         android:layout_marginTop="10dp"
@@ -49,6 +55,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_email_edittext"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
 
         android:hint="Password"
         android:layout_marginTop="10dp"
@@ -61,6 +69,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_password_edittext"
+        android:textColorHint="@color/white"
+        android:backgroundTint="@color/white"
 
         android:hint="Confirm password"
         android:layout_marginTop="10dp"
@@ -91,7 +101,6 @@
         app:layout_constraintTop_toBottomOf="@+id/register_gender_spinner"
         android:datePickerMode="spinner"
         android:calendarViewShown="false"
-
         android:layout_marginTop="10dp"
         />
 
