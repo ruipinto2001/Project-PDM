@@ -25,8 +25,9 @@ class HomeActivity : AppCompatActivity()
 {
     // Get field from XML
     private val contactET: EditText by lazy { findViewById<EditText>(R.id.home_contact_edittext) }
-    private val buttonClick = AlphaAnimation(1f, 0.8f)
     private lateinit var username: String
+
+    private val buttonClick = AlphaAnimation(1f, 0.8f)
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -179,6 +180,7 @@ class HomeActivity : AppCompatActivity()
 
     fun openProfile(view: View)
     {
+        view.startAnimation(buttonClick);
         val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
         startActivity(intent)
     }

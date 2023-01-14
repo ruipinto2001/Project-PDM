@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +25,8 @@ class ProfileActivity : AppCompatActivity()
     private val genderTV: TextView by lazy {
         findViewById<TextView>(R.id.profile_gender_textview) }
 
+    private val buttonClick = AlphaAnimation(1f, 0.8f)
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,7 @@ class ProfileActivity : AppCompatActivity()
 
     fun closeProfile(view: View)
     {
+        view.startAnimation(buttonClick);
         finish()
     }
 
