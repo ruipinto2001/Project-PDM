@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity"
+    android:background="@drawable/profile_box">
+
+
+    <Button
+        android:id="@+id/button_out"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/circle_button"
+        android:text="«"
+        android:textSize="21dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="130dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/text_user">
+    </Button>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/user"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintBottom_toTopOf="@+id/text_user"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/text_user"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:background="#55d6c2"
+        android:textColor="@color/white"
+        tools:ignore="MissingConstraints"
+        android:layout_marginTop="200dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
+
+    <TextView
+        android:id="@+id/username"
+        android:hint="Username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="25dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_user">
+    </TextView>
+
+    <TextView
+        android:id="@+id/text_email"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:text="E-mail"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:background="#55d6c2"
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username">
+    </TextView>
+
+    <TextView
+        android:id="@+id/email"
+        android:hint="E-mail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="25dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_email">
+    </TextView>
+
+    <TextView
+        android:id="@+id/text_birthday"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:text="Birthday"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:background="#55d6c2"
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email">
+    </TextView>
+
+    <TextView
+        android:id="@+id/birthday"
+        android:hint="Birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="25dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_birthday">
+    </TextView>
+
+    <TextView
+        android:id="@+id/text_gender"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:text="Gender"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:background="#55d6c2"
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/birthday">
+    </TextView>
+
+    <TextView
+        android:id="@+id/gender"
+        android:hint="Gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:textSize="25dp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_gender">
+    </TextView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
