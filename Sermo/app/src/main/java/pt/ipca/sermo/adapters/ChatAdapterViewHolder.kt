@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import pt.ipca.sermo.ChatActivity
 import pt.ipca.sermo.R
 
-class ChatAdapterViewHolder(inflater: LayoutInflater, val parent: ViewGroup) :
+class ChatAdapterViewHolder(inflater: LayoutInflater, val parent: ViewGroup,
+                            private val username: String) :
     RecyclerView.ViewHolder(inflater.inflate(R.layout.layout_row, parent, false))
 {
     private var tvChatTitle: TextView? = itemView.findViewById(R.id.home_chatTitle)
@@ -24,6 +25,8 @@ class ChatAdapterViewHolder(inflater: LayoutInflater, val parent: ViewGroup) :
         itemView.setOnClickListener{ v->
             val intent = Intent(v.context, ChatActivity::class.java)
             intent.putExtra("ChatId",chatId)
+            intent.putExtra("Username", username)
+            intent.putExtra("Contact", chatTitle)
             v.context.startActivity(intent)
         }
     }

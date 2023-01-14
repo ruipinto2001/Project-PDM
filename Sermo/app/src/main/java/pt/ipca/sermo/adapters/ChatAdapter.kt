@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipca.sermo.models.ChatDto
 
-class ChatAdapter(private val mList: MutableList<ChatDto>) : RecyclerView.Adapter<ChatAdapterViewHolder>() {
+class ChatAdapter(private val mList: MutableList<ChatDto>, private val username: String) : RecyclerView.Adapter<ChatAdapterViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatAdapterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ChatAdapterViewHolder(inflater, parent)
+        return ChatAdapterViewHolder(inflater, parent, username)
     }
 
     override fun onBindViewHolder(holder: ChatAdapterViewHolder, position: Int)

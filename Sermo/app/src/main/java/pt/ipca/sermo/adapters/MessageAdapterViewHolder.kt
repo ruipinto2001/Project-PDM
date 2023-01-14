@@ -19,9 +19,9 @@ class MessageAdapterViewHolder(inflater: LayoutInflater, val parent: ViewGroup) 
     private var tvTime: TextView? = itemView.findViewById(R.id.message_time)
     private var ivCheck: ImageView? = itemView.findViewById(R.id.message_check)
 
-    fun bindData(author: String, content: String, time: String, state: String)
+    fun bindData(author: String, contactName: String, content: String, time: String, state: String)
     {
-        tvAuthor?.text = author
+        tvAuthor?.text = contactName
         tvContent?.text = content
         tvTime?.text = time
 

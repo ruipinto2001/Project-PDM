@@ -25,11 +25,14 @@ class HomeActivity : AppCompatActivity()
     // Get field from XML
     private val contactET: EditText by lazy { findViewById<EditText>(R.id.home_contact_edittext) }
     private val buttonClick = AlphaAnimation(1f, 0.8f)
+    private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        username = intent.getStringExtra("Username")!!
 
         // RECYCLER VIEW
         val rvList = findViewById<RecyclerView>(R.id.home_chats_rv)
@@ -52,7 +55,7 @@ class HomeActivity : AppCompatActivity()
                 return@addSnapshotListener
             }
 
-            var chatsList: MutableList<ChatDto> = mutableListOf()
+            val chatsList: MutableList<ChatDto> = mutableListOf()
             for (document in result!!)
             {
                 val chatId = document.id
@@ -62,9 +65,13 @@ class HomeActivity : AppCompatActivity()
                 // (if there is no user assigned title to the chat)
                 if (title == "Title")
                 {
-                    title = ""
                     val members = document.get("members") as List<String>
-                    for (m in members) if (m != userId) title += "$m "
+                    val usernames = document.get("usernames") as? List<String>
+                    if (usernames != null)
+                    {
+                        if (members[0] == userId) title = usernames[1]
+                        else title = usernames[0]
+                    }
                 }
 
                 var lastMessage = document.getString("lastMessage")
@@ -77,7 +84,7 @@ class HomeActivity : AppCompatActivity()
                 chatsList.add(importedChat)
                 Log.d(TAG, "${document.id} => ${document.data}")
             }
-            show(ChatAdapter(chatsList), rvList)
+            show(ChatAdapter(chatsList, username), rvList)
         }
     }
 
@@ -121,11 +128,12 @@ class HomeActivity : AppCompatActivity()
                 {
                     val documentFound = querySnapshot.documents[0]
                     val userId = documentFound.getString("uid")
+                    val contactName = documentFound.getString("username")
                     Toast.makeText(this,"User found", Toast.LENGTH_LONG).show()
                     Log.d(TAG, "DocumentSnapshot data: ${documentFound.data}")
 
                     // Create chat with the new user
-                    createChatDB(userId!!)
+                    createChatDB(userId!!, contactName!!)
                 } else
                 {
                     Log.d(TAG, "No such document")
@@ -137,15 +145,18 @@ class HomeActivity : AppCompatActivity()
             }
     }
 
-    private fun createChatDB(contactId: String)
+    private fun createChatDB(contactId: String, contactName: String)
     {
         val userId = Firebase.auth.currentUser!!.uid
 
         // Create list of chat members
         val members = listOf<String>(userId, contactId)
 
+        // Create list of chat usernames
+        val usernames = listOf<String>(username, contactName)
+
         // Create Chat object
-        val createdChat = Chat(members, "Title",
+        val createdChat = Chat(members, usernames, "Title",
             "LastMessage", "Time", false)
 
         // Add chat to the DB
@@ -161,28 +172,7 @@ class HomeActivity : AppCompatActivity()
             }
     }
 
-    private fun findUserById(db: FirebaseFirestore, userId: String, contactId: String)
-    {
-        val docRef = db.collection("Users").document(contactId)
-        docRef.get()
-            .addOnSuccessListener { document ->
-                // If the user was found
-                if (document != null && document.exists())
-                {
-                    val contactUsername = document.getString("username")
-                    Toast.makeText(this,"User found", Toast.LENGTH_LONG).show()
-                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                }
-                else
-                {
-                    Log.d(TAG, "No such document")
-                    Toast.makeText(this,"User not found", Toast.LENGTH_LONG).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
-            }
-    }
+
 
     companion object { private const val TAG = "Home" }
 }

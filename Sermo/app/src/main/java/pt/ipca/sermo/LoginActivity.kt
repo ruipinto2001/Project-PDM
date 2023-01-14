@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import pt.ipca.sermo.models.User
 
@@ -35,13 +36,13 @@ class LoginActivity : AppCompatActivity()
 
         // Initialize Firebase Auth
         auth = Firebase.auth
-
-        // Logout
-        auth.signOut()
     }
 
     fun doLogin(view: View)
     {
+        // Logout
+        auth.signOut()
+
         // Get the values of the XML fields
         val email = emailET.text.toString()
         val password = passwordET.text.toString()
@@ -85,15 +86,44 @@ class LoginActivity : AppCompatActivity()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful)
                 {
-                    Log.d(TAG, "login:success")
-                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                    startActivity(intent)
+                    // Get the uid of the current user
+                    val userId = Firebase.auth.currentUser!!.uid
+
+                    findUsernameById(userId)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "login:failure", task.exception)
                     Toast.makeText(this, "Authentication failed.",
                         Toast.LENGTH_LONG).show()
                 }
+            }
+    }
+
+    private fun findUsernameById(userId: String)
+    {
+        val db = Firebase.firestore
+        val docRef = db.collection("Users").document(userId)
+        docRef.get()
+            .addOnSuccessListener { document ->
+                // If the user was found
+                if (document != null && document.exists())
+                {
+                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                    Log.d(TAG, "login:success")
+                    val username = document.getString("username")
+
+                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                    intent.putExtra("Username", username)
+                    startActivity(intent)
+                }
+                else
+                {
+                    Log.d(TAG, "No such document")
+                    Toast.makeText(this,"User not found", Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
             }
     }
 

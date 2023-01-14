@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -24,17 +23,35 @@ import java.util.*
 
 class ChatActivity : AppCompatActivity()
 {
+    var active = false
+
     // Get field from XML
     private val messageBoxET: EditText by lazy {
         findViewById<EditText>(R.id.chat_messageBox_edittext) }
 
     private lateinit var chatId: String
+    private lateinit var username: String
+    private lateinit var contact: String
     private var messageCount = 0
+
+    override fun onStart() {
+        super.onStart()
+        active = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        active = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+
+        username = intent.getStringExtra("Username")!!
+        contact = intent.getStringExtra("Contact")!!
+        chatId = intent.getStringExtra("ChatId")!!
 
         // RECYCLER VIEW
         val rvList = findViewById<RecyclerView>(R.id.chat_messages_rv)
@@ -52,9 +69,8 @@ class ChatActivity : AppCompatActivity()
         })
 
         // Contact name (on top)
-        chatId = intent.getStringExtra("ChatId")!!
         val tvContactName = findViewById<TextView>(R.id.chat_contact_textview)
-        tvContactName.text = chatId
+        tvContactName.text = contact
 
         // GET ALL CHATS
         messageListener(rvList)
@@ -78,21 +94,24 @@ class ChatActivity : AppCompatActivity()
             for (document in result!!)
             {
                 val author = document.getString("author")
+                val contactUsername = document.getString("username")
                 val content = document.getString("content")
                 val time = document.getString("time")
                 val timestamp = document.getString("timestamp")
                 val state = document.getString("state")
 
                 // Check if the message is from another user and is not assigned as "read" yet
-                if (author != userId && state != "read")
+                if (active && author != userId && state != "read")
                 {
+                    Toast.makeText(this,"!!!LIDO READ READ READ!!!",
+                        Toast.LENGTH_LONG).show()
                     // Update message state
                     val docRefUpdate = db.collection("Chats").document(chatId).
                                         collection("Messages").document(document.id)
                     docRefUpdate.update("state", "read")
                 }
 
-                val importedMessage = Message(author!!, content!!, time!!, timestamp!!, state!!)
+                val importedMessage = Message(author!!, contactUsername!!, content!!, time!!, timestamp!!, state!!)
                 messageList.add(importedMessage)
                 Log.d(TAG, "${document.id} => ${document.data}")
             }
@@ -135,7 +154,7 @@ class ChatActivity : AppCompatActivity()
             val userId = Firebase.auth.currentUser!!.uid
 
             // Create message object
-            val createdMessage = Message(userId, content, time, timestamp, "sent")
+            val createdMessage = Message(userId, username, content, time, timestamp, "sent")
 
             // Add message to the DB
             val db = Firebase.firestore
