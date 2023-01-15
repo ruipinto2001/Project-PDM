@@ -1,6 +1,9 @@
 package pt.ipca.sermo
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -36,7 +39,10 @@ class HomeActivity : AppCompatActivity()
 
         // RECYCLER VIEW
         val rvList = findViewById<RecyclerView>(R.id.home_chats_rv)
-        rvList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        itemDecoration.setDrawable(this.resources.getDrawable(R.drawable.chat_divider))
+        rvList.addItemDecoration(itemDecoration)
+
 
         // GET ALL CHATS
         chatListener(rvList)

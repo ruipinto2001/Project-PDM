@@ -39,7 +39,7 @@ class RegisterActivity : AppCompatActivity()
         auth = Firebase.auth
 
         // Setup the gender spinner (simple_spinner_item)
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
+        val spinnerAdapter = ArrayAdapter(this, R.layout.layout_spinneritem,
             listOf("Male","Female","Other"))
         genderSP.adapter = spinnerAdapter
         genderSP.onItemSelectedListener = object : AdapterView.OnItemSelectedListener

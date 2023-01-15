@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/radius_box"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:layout_marginBottom="5dp">
 
     <TextView
         android:id="@+id/message_author"

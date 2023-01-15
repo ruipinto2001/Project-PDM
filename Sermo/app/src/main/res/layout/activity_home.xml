@@ -43,6 +43,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 android:textSize="15sp"
+                android:textColorHint="@color/gray"
                 android:textColor="@color/black"
                 android:background="@drawable/radius_box"
                 android:hint="New contact email"
