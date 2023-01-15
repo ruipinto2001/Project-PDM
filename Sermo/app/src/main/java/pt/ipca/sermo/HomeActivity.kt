@@ -43,7 +43,6 @@ class HomeActivity : AppCompatActivity()
         itemDecoration.setDrawable(this.resources.getDrawable(R.drawable.chat_divider))
         rvList.addItemDecoration(itemDecoration)
 
-
         // GET ALL CHATS
         chatListener(rvList)
     }

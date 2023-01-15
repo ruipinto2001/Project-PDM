@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import pt.ipca.sermo.models.Message
 
-class MessageAdapter(private val mList: MutableList<Message>) : RecyclerView.Adapter<MessageAdapterViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageAdapterViewHolder {
+class MessageAdapter(private val mList: MutableList<Message>) :
+    RecyclerView.Adapter<MessageAdapterViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
+            MessageAdapterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return MessageAdapterViewHolder(inflater, parent)
     }
