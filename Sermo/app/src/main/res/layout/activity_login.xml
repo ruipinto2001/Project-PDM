@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:background="@drawable/background">
 
     <TextView
         android:id="@+id/main_title_textview"
@@ -13,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-
+        android:textColor="@color/white"
         android:text="SERMO"
         android:textStyle="italic"
         android:layout_marginTop="125dp"
@@ -27,9 +28,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_title_textview"
-
+        android:textColor="@color/white"
+        android:backgroundTint="@color/white"
         android:text="filipegajo@gmail.com"
-
         android:hint="Email"
         android:layout_marginTop="100dp"
 
@@ -42,6 +43,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_email_edittext"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/white"
 
         android:text="bestsermoappAa1-"
         android:inputType="textPassword"
@@ -52,21 +55,22 @@
 
     <Button
         android:id="@+id/login_button"
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_password_edittext"
 
         android:text="LOGIN"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="60dp"
         android:onClick="doLogin"
         />
 
     <Button
         android:id="@+id/login_register_button"
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_button"
