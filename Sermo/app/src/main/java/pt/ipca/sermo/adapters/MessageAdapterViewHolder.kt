@@ -1,6 +1,5 @@
 package pt.ipca.sermo.adapters
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -8,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import pt.ipca.sermo.ChatActivity
 import pt.ipca.sermo.R
 
 class MessageAdapterViewHolder(inflater: LayoutInflater, val parent: ViewGroup) :

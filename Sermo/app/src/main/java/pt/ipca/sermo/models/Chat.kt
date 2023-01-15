@@ -10,5 +10,3 @@ class Chat(members: List<String>, usernames: List<String>, title: String, lastMe
     public val Time = time
     public val GroupChat = groupChat
 }
-
-// TODO: when a message is sent, add attributes to the chat -> lastMessage + lastMsgTimestamp

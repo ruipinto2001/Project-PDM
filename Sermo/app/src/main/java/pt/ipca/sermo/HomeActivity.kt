@@ -11,10 +11,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pt.ipca.sermo.adapters.ChatAdapter
@@ -96,7 +94,7 @@ class HomeActivity : AppCompatActivity()
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
-        recyclerView.setOnFlingListener(null);
+        recyclerView.onFlingListener = null;
     }
 
     fun addNewContact(view: View)
@@ -131,7 +129,6 @@ class HomeActivity : AppCompatActivity()
                     val documentFound = querySnapshot.documents[0]
                     val userId = documentFound.getString("uid")
                     val contactName = documentFound.getString("username")
-                    Toast.makeText(this,"User found", Toast.LENGTH_LONG).show()
                     Log.d(TAG, "DocumentSnapshot data: ${documentFound.data}")
 
                     // Create chat with the new user
@@ -173,8 +170,6 @@ class HomeActivity : AppCompatActivity()
                     e -> Log.w(TAG, "Error adding document", e)
             }
     }
-
-
 
     companion object { private const val TAG = "Home" }
 

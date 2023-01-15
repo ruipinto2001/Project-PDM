@@ -20,7 +20,6 @@ import pt.ipca.sermo.models.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class ChatActivity : AppCompatActivity()
 {
     var active = false
@@ -101,10 +100,9 @@ class ChatActivity : AppCompatActivity()
                 val state = document.getString("state")
 
                 // Check if the message is from another user and is not assigned as "read" yet
+                // (only if the user is currently in the chat = active)
                 if (active && author != userId && state != "read")
                 {
-                    Toast.makeText(this,"!!!LIDO READ READ READ!!!",
-                        Toast.LENGTH_LONG).show()
                     // Update message state
                     val docRefUpdate = db.collection("Chats").document(chatId).
                                         collection("Messages").document(document.id)
@@ -125,7 +123,7 @@ class ChatActivity : AppCompatActivity()
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
-        recyclerView.setOnFlingListener(null);
+        recyclerView.onFlingListener = null;
         messageCount = adapter.itemCount
         recyclerView.scrollToPosition(messageCount - 1)
     }
@@ -164,7 +162,6 @@ class ChatActivity : AppCompatActivity()
             docRefMessages.add(createdMessage)
                 .addOnSuccessListener { document ->
                     Log.d(TAG, "DocumentSnapshot added with ID: ${document.id}")
-                    Toast.makeText(this,"New message sent!", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener {
                         e -> Log.w(TAG, "Error adding document", e)
