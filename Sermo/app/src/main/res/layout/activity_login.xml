@@ -31,7 +31,6 @@
         android:textColorHint="@color/gray"
         android:textColor="@color/white"
         android:backgroundTint="@color/white"
-        android:text="filipegajo@gmail.com"
         android:hint="Email"
         android:layout_marginTop="100dp"
 
@@ -48,7 +47,6 @@
         android:textColor="@color/white"
         android:backgroundTint="@color/white"
 
-        android:text="bestsermoappAa1-"
         android:inputType="textPassword"
 
         android:hint="Password"
