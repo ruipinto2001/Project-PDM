@@ -7,4 +7,5 @@ class User(uid: String, username: String, email: String, gender: String, birthda
     public val Email = email
     public val Gender = gender
     public val Birthday = birthday
+    public val profilePicture = "EMPTY"
 }

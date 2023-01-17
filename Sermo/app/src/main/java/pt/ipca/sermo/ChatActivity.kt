@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import pt.ipca.sermo.adapters.MessageAdapter
@@ -27,11 +28,15 @@ class ChatActivity : AppCompatActivity()
     // Get field from XML
     private val messageBoxET: EditText by lazy {
         findViewById<EditText>(R.id.chat_messageBox_edittext) }
+    private val usersWritingTV: TextView by lazy {
+        findViewById<TextView>(R.id.chat_usersWriting_tv) }
 
     private lateinit var chatId: String
     private lateinit var username: String
     private lateinit var contact: String
     private var messageCount = 0
+    private var userWriting = false
+    private var writingMessage = ""
 
     override fun onStart() {
         super.onStart()
@@ -59,11 +64,22 @@ class ChatActivity : AppCompatActivity()
         // Adjust list when keyboard opens
         rvList.addOnLayoutChangeListener(OnLayoutChangeListener {
                 view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            // Keyboard opened
             if (bottom < oldBottom) {
+                userWriting = true
+                // Add userId to usersWriting Chat attribute
+                updateUsersWriting(userWriting)
                 rvList.postDelayed(
                     Runnable { rvList.scrollToPosition(messageCount - 1) },
                     100
                 )
+            }
+            // Keyboard closed
+            else if (bottom > oldBottom)
+            {
+                userWriting = false
+                // Remove userId from usersWriting Chat attribute
+                updateUsersWriting(userWriting)
             }
         })
 
@@ -73,6 +89,36 @@ class ChatActivity : AppCompatActivity()
 
         // GET ALL CHATS
         messageListener(rvList)
+    }
+
+    private fun writingListener(rvList: RecyclerView)
+    {
+        // Get the uid of the current user
+        val userId = Firebase.auth.currentUser!!.uid
+
+        val db = Firebase.firestore
+        val docRef = db.collection("Chats").document(chatId)
+        docRef.addSnapshotListener { result, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            val usersWriting = result!!.get("usersWriting") as? List<String>
+
+            // If no one is writing
+            if (usersWriting == null) writingMessage = ""
+            // If someone is writing
+            else
+                for (user in usersWriting)
+                    // The user writing is not the current app user
+                    if (user != username)
+                        writingMessage += "$user "
+
+            // Update users writing screen info
+            if (writingMessage != "") writingMessage += "is writing..."
+            usersWritingTV.text = writingMessage
+        }
     }
 
     private fun messageListener(rvList: RecyclerView)
@@ -170,6 +216,20 @@ class ChatActivity : AppCompatActivity()
             // Update chat
             docRefChat.update("lastMessage", content, "time", time)
         }
+    }
+
+    private fun updateUsersWriting(userWriting: Boolean)
+    {
+        val userId = Firebase.auth.currentUser!!.uid
+        val db = Firebase.firestore
+        val docRefUpdate = db.collection("Chats").document(chatId)
+
+        // If the user started writing, add him to the array of users writing
+        if (userWriting)
+            docRefUpdate.update("usersWriting", FieldValue.arrayUnion(username))
+        // If the user stopped writing, remove him from the array of users writing
+        else
+            docRefUpdate.update("usersWriting", FieldValue.arrayRemove(username))
     }
 
     private fun getCurrentFormattedDateTime(): String

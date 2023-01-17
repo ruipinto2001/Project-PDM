@@ -22,16 +22,20 @@
         android:onClick="closeProfile">
     </Button>
 
-    <ImageView
+    <ImageButton
+        android:id="@+id/profile_photo_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/user"
+        android:scaleType="fitCenter"
         tools:ignore="MissingConstraints"
+        android:background="@drawable/circle_button"
         app:layout_constraintBottom_toTopOf="@+id/text_user"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-    </ImageView>
+        app:layout_constraintRight_toRightOf="parent"
+        android:onClick="editPhoto">
+    </ImageButton>
 
     <TextView
         android:id="@+id/text_user"

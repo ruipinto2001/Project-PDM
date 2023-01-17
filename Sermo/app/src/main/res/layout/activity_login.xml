@@ -32,8 +32,8 @@
         android:textColor="@color/white"
         android:backgroundTint="@color/white"
         android:hint="Email"
+        android:text="filipegajo@gmail.com"
         android:layout_marginTop="100dp"
-
         />
 
     <EditText
@@ -46,7 +46,7 @@
         android:textColorHint="@color/gray"
         android:textColor="@color/white"
         android:backgroundTint="@color/white"
-
+        android:text="bestsermoappAa1-"
         android:inputType="textPassword"
 
         android:hint="Password"
