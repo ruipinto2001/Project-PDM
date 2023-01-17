@@ -89,6 +89,9 @@ class ChatActivity : AppCompatActivity()
 
         // GET ALL CHATS
         messageListener(rvList)
+
+        // Listen to users writing
+        writingListener(rvList)
     }
 
     private fun writingListener(rvList: RecyclerView)
@@ -106,10 +109,10 @@ class ChatActivity : AppCompatActivity()
 
             val usersWriting = result!!.get("usersWriting") as? List<String>
 
-            // If no one is writing
-            if (usersWriting == null) writingMessage = ""
+            // Reset
+            writingMessage = ""
             // If someone is writing
-            else
+            if (usersWriting != null)
                 for (user in usersWriting)
                     // The user writing is not the current app user
                     if (user != username)
@@ -118,6 +121,7 @@ class ChatActivity : AppCompatActivity()
             // Update users writing screen info
             if (writingMessage != "") writingMessage += "is writing..."
             usersWritingTV.text = writingMessage
+            //Toast.makeText(this,"TEST: " + writingMessage,Toast.LENGTH_LONG).show()
         }
     }
 
