@@ -15,9 +15,11 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import pt.ipca.sermo.adapters.ChatAdapter
 import pt.ipca.sermo.models.Chat
 import pt.ipca.sermo.models.ChatDto
@@ -183,5 +185,25 @@ class HomeActivity : AppCompatActivity()
         view.startAnimation(buttonClick);
         val intent = Intent(this@HomeActivity, ProfileActivity::class.java)
         startActivity(intent)
+    }
+
+    fun getPushToken()
+    {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            if (task.result != null && !TextUtils.isEmpty(task.result))
+            {
+                // Get new FCM registration token
+                val token: String = task.result!!
+
+                val msg = "InstanceID Token: "+token
+                Log.d("Main", msg)
+                Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
