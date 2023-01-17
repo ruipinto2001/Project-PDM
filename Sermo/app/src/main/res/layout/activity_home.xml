@@ -46,6 +46,7 @@
                 android:textColorHint="@color/gray"
                 android:textColor="@color/black"
                 android:background="@drawable/radius_box"
+                android:inputType="textEmailAddress"
                 android:hint="New contact email"
                 android:paddingLeft="10dp"/>
 
